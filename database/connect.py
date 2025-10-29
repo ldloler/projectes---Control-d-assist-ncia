@@ -2,7 +2,7 @@ import psycopg2
 
 def connection_db():
     conn = psycopg2.connect(
-        database="the_bear",
+        database="control",
         password="admin",
         user="admin",
         host="localhost",

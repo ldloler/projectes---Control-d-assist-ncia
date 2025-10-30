@@ -1,9 +1,12 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Session
+from services import curs
+from models import Curs
+from schemas import Curs_schema
 
 
 # Creació de FastAPI
@@ -36,3 +39,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# ###############
+# Cursos
+# ###############
+
+@app.get("/cursos/", response_model=list[dict])
+async def read_cursos(db: Session = Depends(get_db)):
+    result = curs.get_all_cursos(db)
+    return result

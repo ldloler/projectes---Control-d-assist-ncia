@@ -12,7 +12,7 @@ def get_all_cursos(db: Session):
 def get_1_cursos(id, db: Session):
     sql_read = select(Curs).where(Curs.ID == id)
     result = db.exec(sql_read)
-    curs = result.one()
+    curs = result.all()
     return cursos_schema(curs)
 
 # Crea un Curs a la BBDD.

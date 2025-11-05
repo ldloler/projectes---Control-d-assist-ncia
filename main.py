@@ -65,5 +65,5 @@ async def del_curs(id_curs: int, db: Session = Depends(get_db)):
 # Llegeix 1 curs a la db. Segons id
 @app.get("/cursos/{id_curs}", response_model=list[dict])
 async def read_1_cursos(id_curs: int, db: Session = Depends(get_db)):
-    result = read_1_cursos(int(id_curs), db)
+    result = curs_service.get_1_cursos(id_curs, db)
     return result

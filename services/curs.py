@@ -1,5 +1,5 @@
 from models.Curs import Curs
-from schemas.Curs_schema import cursos_schema
+from schemas.Curs_schema import cursos_schema, curs_schema
 from sqlmodel import Session, select
 
 # Llegeix tots els Cursos de la BBDD.
@@ -33,3 +33,22 @@ def del_curs(id, db:Session):
         return 1
     except:
         return 0
+    
+# Modifica completament 1 curs, segons id.
+def update_curs_full(id, new_curs: Curs, db: Session):
+    sql_read = select(Curs).where(Curs.ID == id)
+    result = db.exec(sql_read)
+    curs = result.one()
+    
+    curs.nom = new_curs.nom
+    curs.grup = new_curs.grup
+    curs.promocio = new_curs.promocio
+
+    # curs = Curs(ID=None, nom=curs.nom, grup=curs.grup, promocio=curs.promocio)
+
+    curs = curs_schema(curs)
+
+    db.add(curs)
+    db.commit()
+    db.refresh(curs)
+    return curs

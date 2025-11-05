@@ -67,3 +67,9 @@ async def del_curs(id_curs: int, db: Session = Depends(get_db)):
 async def read_1_cursos(id_curs: int, db: Session = Depends(get_db)):
     result = curs_service.get_1_cursos(id_curs, db)
     return result
+
+# Modifica completament 1 curs, segons id.
+@app.patch("/cursos/{id_curs}", response_model=list[dict])
+async def update_cursos_full(id_curs: int, curs: Curs_model, db: Session = Depends(get_db)):
+    result = curs_service.update_curs_full(id_curs, curs, db)
+    return result

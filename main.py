@@ -61,3 +61,9 @@ async def save_curs(curs: Curs_model, db: Session = Depends(get_db)):
 async def del_curs(id_curs: int, db: Session = Depends(get_db)):
     numReg = curs_service.del_curs(id_curs, db)
     return f'{numReg} cursos eliminats'
+
+# Llegeix 1 curs a la db. Segons id
+@app.get("/cursos/{id_curs}", response_model=list[dict])
+async def read_1_cursos(id_curs: int, db: Session = Depends(get_db)):
+    result = read_1_cursos(int(id_curs), db)
+    return result

@@ -1,4 +1,4 @@
-from models.Curs import Curs
+from models.Curs import Curs, Curs_modify_all
 from schemas.Curs_schema import cursos_schema, curs_schema
 from sqlmodel import Session, select
 
@@ -35,18 +35,40 @@ def del_curs(id, db:Session):
         return 0
     
 # Modifica completament 1 curs, segons id.
-def update_curs_full(id, new_curs: Curs, db: Session):
+def update_curs_full(id, new_curs: Curs_modify_all, db: Session):
+    sql_read = select(Curs).where(Curs.ID == id)
+    result = db.exec(sql_read)
+    curs = result.one()
+
+    new_curs_data = new_curs.model_dump()
+    curs.sqlmodel_update(new_curs_data)
+
+    db.add(curs)
+    db.commit()
+    db.refresh(curs)
+    return_curs = Curs(ID=curs.ID, nom=curs.nom, grup=curs.grup, promocio=curs.promocio)
+    return return_curs
+
+# Modifica nom de 1 curs, segons id.
+def update_curs_nom(id, nom: str, db: Session):
     sql_read = select(Curs).where(Curs.ID == id)
     result = db.exec(sql_read)
     curs = result.one()
     
-    curs.nom = new_curs.nom
-    curs.grup = new_curs.grup
-    curs.promocio = new_curs.promocio
+    curs.nom = nom
 
-    # curs = Curs(ID=None, nom=curs.nom, grup=curs.grup, promocio=curs.promocio)
+    db.add(curs)
+    db.commit()
+    db.refresh(curs)
+    return curs
 
-    curs = curs_schema(curs)
+# Modifica grup de 1 curs, segons id.
+def update_curs_grup(id, grup: str, db: Session):
+    sql_read = select(Curs).where(Curs.ID == id)
+    result = db.exec(sql_read)
+    curs = result.one()
+    
+    curs.grup = grup
 
     db.add(curs)
     db.commit()

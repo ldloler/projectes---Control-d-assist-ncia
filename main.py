@@ -7,6 +7,7 @@ from sqlmodel import SQLModel, Session
 
 from services import curs as curs_service
 from models.Curs import Curs as Curs_model
+from models.Curs import Curs_modify_all
 
 from services import alumne as alum_service
 from models.Alumne import Alumne as alum_model
@@ -54,7 +55,7 @@ async def read_cursos(db: Session = Depends(get_db)):
     return result
 
 # Guarda un curs a la db.
-@app.put("/cursos/", response_model=str)
+@app.post("/cursos/", response_model=str)
 async def save_curs(curs: Curs_model, db: Session = Depends(get_db)):
     curs = curs_service.save_curs(curs, db)
     return '1 curs afegit' if curs != None else '0 cursos afegits'
@@ -72,15 +73,25 @@ async def read_1_cursos(id_curs: int, db: Session = Depends(get_db)):
     return result
 
 # Modifica completament 1 curs, segons id.
-@app.patch("/cursos/{id_curs}", response_model=list[dict])
-async def update_cursos_full(id_curs: int, curs: Curs_model, db: Session = Depends(get_db)):
+@app.put("/cursos/{id_curs}", response_model=Curs_model)
+async def update_cursos_full(id_curs: int, curs: Curs_modify_all, db: Session = Depends(get_db)):
     result = curs_service.update_curs_full(id_curs, curs, db)
     return result
 
-# Modifica parcialment 1 curs, segons id.
+# Modifica nom 1 curs, segons id.
+@app.patch("/cursos/{id_curs}/nom", response_model=Curs_model)
+async def update_cursos_parcial(id_curs: int, nom: str, db: Session = Depends(get_db)):
+    result = curs_service.update_curs_nom(id_curs, nom, db)
+    return result
+
+# Modifica grup 1 curs, segons id.
+@app.patch("/cursos/{id_curs}/grup", response_model=Curs_model)
+async def update_cursos_parcial(id_curs: int, grup: str, db: Session = Depends(get_db)):
+    result = curs_service.update_curs_grup(id_curs, grup, db)
+    return result
 
 # ############
-# Users
+# Alumnes
 # ############
 
 # Llegeix tots els Alumnes.

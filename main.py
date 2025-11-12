@@ -12,6 +12,8 @@ from models.Curs import Curs_modify_all
 from services import alumne as alum_service
 from models.Alumne import Alumne as alum_model
 
+from services import uid as uid_service
+
 
 # Creació de FastAPI
 app = FastAPI()
@@ -95,7 +97,7 @@ async def update_cursos_parcial(id_curs: int, grup: str, db: Session = Depends(g
 # ############
 
 # Llegeix tots els Alumnes.
-@app.get("/alumnes/", response_model=list[dict])
+@app.get("/alumnes/", response_model=list[alum_model])
 async def read_alumnes(db: Session = Depends(get_db)):
     result = alum_service.get_all_alumnes(db)
     return result
@@ -105,3 +107,9 @@ async def read_alumnes(db: Session = Depends(get_db)):
 async def save_alumne(alumne: alum_model, db: Session = Depends(get_db)):
     alumne = alum_service.save_alumne(alumne, db)
     return '1 alumne afegit' if alumne != None else '0 alumnes afegits'
+
+# Comprova si un uid esta registrat a un alumne
+@app.get("/check/uid", response_model=bool)
+async def check_alum_uid(uid: str, db: Session = Depends(get_db)):
+    resposta = uid_service.check_uid(uid, db)
+    return resposta

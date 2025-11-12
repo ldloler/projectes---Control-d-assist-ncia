@@ -5,3 +5,8 @@ class Curs(SQLModel, table=True):
     nom: str
     grup: str
     promocio: int
+
+class Curs_modify_all(SQLModel):
+    nom: str
+    grup: str
+    promocio: int
